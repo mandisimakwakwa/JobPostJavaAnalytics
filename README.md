@@ -8,8 +8,8 @@ A java application that uses job post data from a csv to do data analytics by pr
     ```
      sudo pacman -S jre8-openjdk-headless jre8-openjdk jdk8-openjdk openjdk8-doc openjdk8-src
     ```
-2. Download Maven : 
-    http://maven.apache.org/download.cgi 
+2. Download Maven :
+    http://maven.apache.org/download.cgi
 
 3. Extract Maven :
      ```
@@ -32,3 +32,7 @@ A java application that uses job post data from a csv to do data analytics by pr
      mvn --version
     ```
 
+# Spring setup
+'''
+spring init -d=jpa --build=maven --groupId=com.store.app DataStoreService
+'''
