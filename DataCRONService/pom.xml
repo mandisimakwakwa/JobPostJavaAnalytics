@@ -11,8 +11,8 @@
 	<groupId>com.cron.app</groupId>
 	<artifactId>DataCRONService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>dcs</name>
+	<description>DCS project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
