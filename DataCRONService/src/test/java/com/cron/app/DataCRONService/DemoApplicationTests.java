@@ -1,10 +1,10 @@
-package com.analytics.app;
+package com.cron.app.DataCRONService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AppApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
