@@ -32,8 +32,22 @@ A collection of microservice based java applications that use job post data from
      mvn --version
     ```
 
-### Spring setup
-1. Create Service :
+### Spring setup (Linux)
+1. Download spring-cli for version 2.1.8 from https://repo.spring.io/ui/native/snapshot/org/springframework/boot/spring-boot-cli/2.1.8.BUILD-SNAPSHOT/
+2. Extract tar file
+   ```
+   sudo tar -xzf spring-boot-cli-2.1.8.BUILD-20190905.074229-53-bin.tar.gz
+   ```
+3. Move extracted file contents to opt/spring
+4. Create SPRING_HOME env var
+   ```
+   export SPRING_HOME = /opt/spring
+   ```
+6. Add env var to path var
+   ```
+   export PATH=$PATH:$SPRING_HOME/bin
+   ```
+7. Create Service :
     ```
     spring init --build=maven --groupId=com.example.app ServiceName
     ```
