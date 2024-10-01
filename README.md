@@ -1,7 +1,7 @@
 # JobPostJavaAnalytics
 
 ## Description
-A java application that uses job post data from a csv to do data analytics by processing the data via kafka
+A collection of microservice based java applications that use job post data from a csv to do data analytics by processing the data via kafka.
 
 ### Java Project Setup
 1. Install JAVA openJDK 1.8
@@ -32,7 +32,8 @@ A java application that uses job post data from a csv to do data analytics by pr
      mvn --version
     ```
 
-# Spring setup
+### Spring setup
+1. Create Service
 '''
-spring init -d=jpa --build=maven --groupId=com.store.app DataStoreService
+spring init --build=maven --groupId=com.example.app ServiceName
 '''
