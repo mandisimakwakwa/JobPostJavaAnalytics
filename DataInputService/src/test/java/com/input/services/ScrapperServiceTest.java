@@ -1,3 +1,3 @@
-package com.cron.services;
+package com.input.services;
 
 public class ScrapperServiceTest {}

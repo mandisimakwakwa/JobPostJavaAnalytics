@@ -1,4 +1,4 @@
-package com.cron.app;
+package com.input.app;
 
 import java.io.IOException;
 
@@ -10,10 +10,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.cron.services.ScrapperService;
+import com.input.services.ScrapperService;;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@ComponentScan({"com.cron"})
+@ComponentScan({"com.input"})
 @EnableScheduling
 public class InputApplication {
 

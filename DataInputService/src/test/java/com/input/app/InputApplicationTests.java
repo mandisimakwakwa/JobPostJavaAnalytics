@@ -1,4 +1,4 @@
-package com.cron.app;
+package com.input.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
