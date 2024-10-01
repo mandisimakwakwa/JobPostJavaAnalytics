@@ -33,7 +33,7 @@ A collection of microservice based java applications that use job post data from
     ```
 
 ### Spring setup
-1. Create Service
-'''
-spring init --build=maven --groupId=com.example.app ServiceName
-'''
+1. Create Service :
+    ```
+    spring init --build=maven --groupId=com.example.app ServiceName
+    ```
