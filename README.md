@@ -32,7 +32,7 @@ A collection of microservice based java applications that use job post data from
      mvn --version
     ```
 
-### Spring setup (Linux)
+### Spring Setup (Linux)
 1. Download spring-cli for version 2.1.8 from https://repo.spring.io/ui/native/snapshot/org/springframework/boot/spring-boot-cli/2.1.8.BUILD-SNAPSHOT/
 2. Extract tar file
    ```
