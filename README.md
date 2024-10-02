@@ -3,7 +3,7 @@
 ## Description
 A collection of microservice based java applications that use job post data from a csv to do data analytics by processing the data via kafka.
 
-### Java Project Setup
+### Java Project Setup (linux)
 1. Install JAVA openJDK 1.8
     ```
      sudo pacman -S jre8-openjdk-headless jre8-openjdk jdk8-openjdk openjdk8-doc openjdk8-src
@@ -32,7 +32,7 @@ A collection of microservice based java applications that use job post data from
      mvn --version
     ```
 
-### Spring setup (Linux)
+### Spring Setup (Linux)
 1. Download spring-cli for version 2.1.8 from https://repo.spring.io/ui/native/snapshot/org/springframework/boot/spring-boot-cli/2.1.8.BUILD-SNAPSHOT/
 2. Extract tar file
    ```
