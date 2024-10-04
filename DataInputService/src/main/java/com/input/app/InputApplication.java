@@ -41,8 +41,8 @@ public class InputApplication {
 	}
 
 	// Runs cron job every midnight of every day
-	// @Scheduled(cron = "0 0 0 * * *")
-	@Scheduled(cron = "0 36 4 * * *")
+	@Scheduled(cron = "0 0 0 * * *")
+	// @Scheduled(cron = "0 36 4 * * *")
     public void cronJobScheduler() throws InterruptedException, IOException {
 
         scrapperService.runScrapperApp();
