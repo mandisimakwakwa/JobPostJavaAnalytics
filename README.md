@@ -51,3 +51,29 @@ A collection of microservice based java applications that use job post data from
     ```
     spring init --build=maven --groupId=com.example.app ServiceName
     ```
+
+### Kafka && Zookeeper Setup (Linux)
+1. Download kafka via wget
+   ```
+   wget https://archive.apache.org/dist/kafka/3.2.1/kafka_2.13-3.2.1.tgz
+   ```
+2. Extract tar contents via
+   ```
+   sudo tar -xzf kafka_2.13-3.2.1.tgz
+   ```
+3. Rename the dir to kafka
+   ```
+   mv kafka_2.13-3.2.1 kafka
+   ```
+4. move the dir to /opt
+   ```
+   mv kafka /opt/
+   ```
+5. start zookeeper from home dir
+   ```
+   sudo sh /opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties
+   ```
+6. start kafka from home dir
+   ```
+   sudo sh /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
+   ```

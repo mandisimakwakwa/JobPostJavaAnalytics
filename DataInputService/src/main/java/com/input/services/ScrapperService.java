@@ -24,12 +24,17 @@ public class ScrapperService {
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+
             while ((line = reader.readLine()) != null) {
+
                 System.out.println(line);
             }
 
             int exitCode = process.waitFor();
             System.out.println("Process exited with code: " + exitCode);
+
+            if (exitCode != 0)
+                process.destroy();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
