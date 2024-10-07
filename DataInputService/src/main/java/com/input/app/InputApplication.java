@@ -14,8 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.input.events.DataInputEvent;
 import com.input.services.CSVReaderService;
-import com.input.services.DataInputEventProdService;
-import com.input.services.ScrapperService;;
+import com.input.services.ScrapperService;
+import com.input.services.events.DataInputEventProdService;;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @ComponentScan({"com.input"})
@@ -55,7 +55,7 @@ public class InputApplication {
 		DataInputEvent dataInputEvent = new DataInputEvent();
 
 		dataInputEvent.setDataInputEventArray(csvDataList);
-		dataInputEventProdService.sendOrderEvent(dataInputEvent);
+		dataInputEventProdService.sendDataInputEvent(dataInputEvent);
 		System.out.println("Data Input Event Produced");
 
 		// 2.2 Delete CSV file
