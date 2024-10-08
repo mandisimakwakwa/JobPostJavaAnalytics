@@ -24,8 +24,8 @@ public class DataInputEventService {
         return dataInputEventProdService.sendDataInputEvent(dataInputEvent);
     }
 
-    public void getDataInputEventProc() {
+    public DataInputEvent getDataInputEventProc(String eventId) {
 
-        dataInputEventConsService.getDataInputEvent(null);
+        return dataInputEventConsService.getDataInputEvent(eventId);
     }
 }
