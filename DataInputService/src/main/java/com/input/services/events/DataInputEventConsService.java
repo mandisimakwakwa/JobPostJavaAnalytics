@@ -18,12 +18,14 @@ public class DataInputEventConsService {
 
     private ConcurrentHashMap<String, DataInputEvent> dataInputEventInMemStore = new ConcurrentHashMap<>();
 
-    @KafkaListener(topics = dataInputEventTopic, groupId = dataInputEventGroupId)
+    @KafkaListener(topics = dataInputEventTopic, groupId = dataInputEventGroupId, concurrency = "3")
     public void consumeDataInputEvent(String dataInputEventJSON) {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         DataInputEvent dataInputEvent = new DataInputEvent();
+
+        String dataInputEventKey = null;
         try {
 
             System.out.println("json event val : " + dataInputEventJSON);
@@ -31,16 +33,19 @@ public class DataInputEventConsService {
             dataInputEvent = objectMapper.readValue(
             dataInputEventJSON, DataInputEvent.class);
 
-            String dataInputEventKey = dataInputEvent.getEventId();
+            dataInputEventKey = dataInputEvent.getEventId();
+        } catch (JsonProcessingException e) {
+
+            e.printStackTrace();
+        }
+
+        if (dataInputEventKey != null) {
 
             System.out.println("json conv res : " + dataInputEvent);
             System.out.println("json conv event id res : " + dataInputEventKey);
             System.out.println("json conv event name res : " + dataInputEvent.getEventName());
 
             System.out.println("output of event store in mem : " + dataInputEventInMemStore.put(dataInputEventKey, dataInputEvent));
-        } catch (JsonProcessingException e) {
-
-            e.printStackTrace();
         }
     }
 

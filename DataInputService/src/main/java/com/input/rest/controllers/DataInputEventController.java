@@ -2,8 +2,6 @@ package com.input.rest.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,12 +43,12 @@ public class DataInputEventController {
             return dataInputEventResponse;
     }
 
-    @GetMapping(value = "data/input/events/{eventId}")
-    public DataInputEventResponse fetchUserById(
-            @Validated
-            @PathVariable(value = "eventId") String eventId) {
+    // @GetMapping(value = "data/input/events/{eventId}")
+    // public DataInputEventResponse fetchUserById(
+    //         @Validated
+    //         @PathVariable(value = "eventId") String eventId) {
 
-        return DataInputEventMapper.toEventResp.apply(
-            dataInputEventService.getDataInputEventProc(eventId));
-    }
+    //     return DataInputEventMapper.toEventResp.apply(
+    //         dataInputEventService.getDataInputEventProc(eventId));
+    // }
 }
