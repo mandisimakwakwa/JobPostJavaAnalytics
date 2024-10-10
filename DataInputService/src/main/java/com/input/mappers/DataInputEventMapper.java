@@ -21,6 +21,7 @@ public class DataInputEventMapper {
         eR -> {
 
             DataInputEventResponse dataInputEventResponse = new DataInputEventResponse();
+            
             dataInputEventResponse.setEventId(eR.getEventId());
             dataInputEventResponse.setEventName(eR.getEventName());
             dataInputEventResponse.setEventSourceService(eR.getEventSourceService());

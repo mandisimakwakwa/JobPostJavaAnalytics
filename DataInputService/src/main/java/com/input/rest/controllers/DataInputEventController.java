@@ -41,5 +41,14 @@ public class DataInputEventController {
                 dataInputEventService.sendDataInputEventProc(dataInputEvent));
             
             return dataInputEventResponse;
-        }
+    }
+
+    // @GetMapping(value = "data/input/events/{eventId}")
+    // public DataInputEventResponse fetchUserById(
+    //         @Validated
+    //         @PathVariable(value = "eventId") String eventId) {
+
+    //     return DataInputEventMapper.toEventResp.apply(
+    //         dataInputEventService.getDataInputEventProc(eventId));
+    // }
 }
