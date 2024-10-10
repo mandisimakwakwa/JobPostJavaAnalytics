@@ -1,6 +1,7 @@
 package com.input.rest.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +16,17 @@ import com.input.services.DataInputService;
 @RequestMapping(AppConstants.REST)
 public class DataInputController {
 
-    @Autowired
     private DataInputService dataInputService;
 
-    @ResponseStatus(HttpStatus.CREATED)
+    public DataInputController(DataInputService dataInputServ) {
+
+        this.dataInputService = dataInputServ;
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping( value = "data/inputs")
-    public void runDataInputCron() {}
+    public void runDataInputCron() throws IOException {
+
+        dataInputService.createCronJobProc();
+    }
 }
