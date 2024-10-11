@@ -12,7 +12,7 @@
 	<artifactId>DataInputService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>dis</name>
-	<description>DIS project for Spring Boot</description>
+	<description>Data Input Service</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -34,6 +34,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

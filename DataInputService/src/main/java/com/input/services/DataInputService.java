@@ -28,7 +28,7 @@ public class DataInputService {
 
     public void createCronJobProc() throws IOException {
 
-        scrapperService.runScrapperApp();
+        // scrapperService.runScrapperApp();
 
 		List<String[]> csvDataList = csvReaderService.createDataListFromCSV();
 
