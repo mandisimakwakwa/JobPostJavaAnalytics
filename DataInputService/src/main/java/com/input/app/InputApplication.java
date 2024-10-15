@@ -29,7 +29,7 @@ public class InputApplication {
 	}
 
 	// @Scheduled(cron = "0 0 0 * * *")
-	@Scheduled(cron = "0 50 6 * * *")
+	@Scheduled(cron = "0 0 5 * * *")
     public void cronJobScheduler() throws InterruptedException, IOException {
 
         dataInputService.createCronJobProc();

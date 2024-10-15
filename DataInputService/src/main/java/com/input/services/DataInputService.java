@@ -36,7 +36,7 @@ public class DataInputService {
 
 		dataInputEvent.setDataInputEventArray(csvDataList);
 		dataInputEventProdService.sendDataInputEvent(dataInputEvent);
-		System.out.println("Data Input Event Produced");
+		// System.out.println("Data Input Event Produced");
 
 		String fileDir = System.getProperty("user.dir");
 		String fileName = "/jobPosts.csv";
