@@ -3,7 +3,6 @@ package com.analytics.services.events;
 import org.springframework.stereotype.Service;
 
 import com.analytics.events.DataAnalyticsTrendsEvent;
-import com.analytics.events.DataInputEvent;
 
 @Service
 public class DataAnalyticsEventService {
@@ -26,8 +25,8 @@ public class DataAnalyticsEventService {
             dataAnalyticsTrendsEvent);
     }
 
-    public DataInputEvent getDataInputEventProc(String eventId) {
+    // public DataInputEvent getDataInputEventProc(String eventId) {
 
-        return dataInputEventConsService.getDataInputEvent(eventId);
-    }
+    //     return dataInputEventConsService.getDataInputEvent(eventId);
+    // }
 }

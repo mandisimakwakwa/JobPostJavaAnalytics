@@ -14,5 +14,4 @@ public class DataAnalyticsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DataAnalyticsApplication.class, args);
 	}
-
 }

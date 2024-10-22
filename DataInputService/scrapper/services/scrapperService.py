@@ -92,7 +92,7 @@ class ScrapperService:
             "Correctional Services",
             "Defence",
             "Employment and Labour",
-            "Forestry, Fisheries and the Environment"
+            "Forestry, Fisheries and the Environment",
             "Government Communication and Information System",
             "Health",
             "Higher Education and Training",
