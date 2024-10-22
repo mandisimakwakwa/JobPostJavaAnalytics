@@ -8,7 +8,7 @@ import com.analytics.rest.models.JobPost;
 public class DataAnalyticsTrendsEvent extends Event {
 
     String mostPopularDailyPost = "";
-    String mostPopularDailyLocation = "";
+    // String mostPopularDailyLocation = "";
     String mostPopularDailyDepartment = "";
 
     Double avgDailyRenumeration = 0.00;
@@ -24,13 +24,13 @@ public class DataAnalyticsTrendsEvent extends Event {
         this.mostPopularDailyPost = mostPopularDailyPost;
     }
 
-    public String getMostPopularDailyLocation() {
-        return mostPopularDailyLocation;
-    }
+    // public String getMostPopularDailyLocation() {
+    //     return mostPopularDailyLocation;
+    // }
 
-    public void setMostPopularDailyLocation(String mostPopularDailyLocation) {
-        this.mostPopularDailyLocation = mostPopularDailyLocation;
-    }
+    // public void setMostPopularDailyLocation(String mostPopularDailyLocation) {
+    //     this.mostPopularDailyLocation = mostPopularDailyLocation;
+    // }
 
     public String getMostPopularDailyDepartment() {
         return mostPopularDailyDepartment;
