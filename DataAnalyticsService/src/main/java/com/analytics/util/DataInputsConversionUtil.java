@@ -1,64 +1,30 @@
 package com.analytics.util;
 
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+import com.analytics.constants.AppConstants;
 import com.analytics.rest.models.JobPost;
 
 @Component
 public class DataInputsConversionUtil {
 
-    private final static List<String> deparmentList = Arrays.asList(
-        "Agriculture, Land Reform and Rural Development",
-        "Basic Education",
-        "Civilian Secretariat for Police",
-        "Communications and Digital Technologies",
-        "Cooperative Governance and Traditional Affairs",
-        "Co-Operative Governance and Traditional Affairs",
-        "Correctional Services",
-        "Defence",
-        "Employment and Labour",
-        "Forestry, Fisheries and the Environment",
-        "Government Communication and Information System",
-        "Health",
-        "Higher Education and Training",
-        "Home Affairs",
-        "Human Settlements",
-        "Independent Police Investigative Directorate",
-        "International Relations and Cooperation",
-        "Justice and Constitutional Development",
-        "Military Veterans",
-        "Mineral Resources and Energy",
-        "National School of Government",
-        "National Treasury",
-        "Office of the Chief Justice",
-        "Planning Monitoring and Evaluation",
-        "Public Enterprises",
-        "Public Service and Administration",
-        "Public Service Commission",
-        "Public Works and Infrastructure",
-        "Infrastructure Development",
-        "Science and Innovation",
-        "Small Business Development",
-        "Social Development",
-        "SA Police Service",
-        "SA Revenue Service",
-        "State Security Agency",
-        "Sport, Arts and Culture",
-        "Statistics South Africa",
-        "Tourism",
-        "Trade, Industry and Competition",
-        "Transport",
-        "Water and Sanitation",
-        "Women, Youth and Persons with Disabilities",
-        "The Presidency"
-    );
+    private DataInputCleanerUtil dataInputCleanerUtil;
+
+    public DataInputsConversionUtil(DataInputCleanerUtil cleanerUtil) {
+
+        this.dataInputCleanerUtil = cleanerUtil;
+    }
 
     public List<JobPost> convDataInputsToJobPosts(List<String[]> dataInputs) throws Exception {
 
@@ -68,7 +34,7 @@ public class DataInputsConversionUtil {
 
         for (String[] dataInput : dataInputs) {
 
-            if (index < 1) {
+            if (index < 0) {
                 index++;
                 continue;
             }
@@ -82,21 +48,29 @@ public class DataInputsConversionUtil {
         return jobPosts;
     }
 
-    private static JobPost convDataInputToJobPost(String[] dataInput) throws Exception {
+    private JobPost convDataInputToJobPost(String[] dataInput) throws Exception {
 
         JobPost jobPost = new JobPost();
 
         String jobTitle = extractJobTitleFromDataInput(dataInput);
         String jobDepartment = extractJobDepartmentFromDataInput(dataInput);
-        Date jobClosingDate = extractJobClosingDateFromDataInput(dataInput);
-        List<Double> jobRenumerations = extractJobRenumerationsFromDataInput(dataInput);
 
-        jobPost.setTitle(jobTitle);
-        jobPost.setDepartment(jobDepartment);
-        jobPost.setDate(jobClosingDate);
-        jobPost.setRenumeration(jobRenumerations);
+        String jobTitleClean = dataInputCleanerUtil.cleanJobTitle(jobTitle);
+        String jobDepartmentClean = dataInputCleanerUtil.cleanJobDepartment(jobDepartment);
+
+        Date jobClosingDate = extractJobClosingDateFromDataInput(dataInput);
+        Date jobClosingDateClean = dataInputCleanerUtil.cleanJobClosingDate(jobClosingDate);
+        
+        List<BigDecimal> jobRenumerations = extractJobRenumerationsFromDataInput(dataInput);
+        Set<BigDecimal> jobRenumClean = dataInputCleanerUtil.cleanJobRenum(jobRenumerations);
+
+        jobPost.setTitle(jobTitleClean);
+        jobPost.setDepartment(jobDepartmentClean);
+        jobPost.setDate(jobClosingDateClean);
+        jobPost.setRenumeration(jobRenumClean);
         return jobPost;
     }
+
 
     private static String extractJobTitleFromDataInput(String[] dataInput) throws Exception {
         
@@ -115,7 +89,7 @@ public class DataInputsConversionUtil {
             titleTmpCount++;
         }
 
-        return formatJobTitleStr(jobTitle);
+        return jobTitle;
     }
 
     private static String extractJobDepartmentFromDataInput(String[] dataInput) throws Exception {
@@ -130,8 +104,6 @@ public class DataInputsConversionUtil {
 
     private static Date extractJobClosingDateFromDataInput(String[] dataInput) throws Exception {
         
-        Date closingDate = null;
-
         String closingDateStr = "";
         String dateRegex = "\\['(\\d{4}/\\d{2}/\\d{2})'\\]";
 
@@ -154,13 +126,18 @@ public class DataInputsConversionUtil {
         closingDateStr = matcher.group(1);
         closingDateStr = closingDateStr.replace("/", "-");
 
-        closingDate = Date.valueOf(closingDateStr);
-        return closingDate;
+        return convertDateStrToDate(closingDateStr);
     }
 
-    private static List<Double> extractJobRenumerationsFromDataInput(String[] dataInput) {
+    private static Date convertDateStrToDate(String closingDateStr) throws ParseException {
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+        return dateFormat.parse(closingDateStr);
+    }
+
+    private List<BigDecimal> extractJobRenumerationsFromDataInput(String[] dataInput) {
         
-        List<Double> renumerations = new ArrayList<>();
+        List<BigDecimal> renumerations = new ArrayList<>();
 
         int renumerationStrPos = findRenumerationStrPos(dataInput);
         int tracker = dataInput.length;
@@ -177,7 +154,7 @@ public class DataInputsConversionUtil {
                 renumerationStrPos++;
                 continue;
             }
-            String nextInAmountStr = dataInput[renumerationStrPos + 1] != null ? dataInput[renumerationStrPos + 1] : centsRepStr;
+            String nextInAmountStr = !findDateStrMatch(dataInput[renumerationStrPos + 1]) ? dataInput[renumerationStrPos + 1] : centsRepStr;
             String newAmountStr = "";
 
             if (curInAmountStr.contains(centsRepStr) && !curInAmountStr.contains("R")) {
@@ -191,52 +168,30 @@ public class DataInputsConversionUtil {
                 renumerationStrPos++;
             }
 
-            List<String> cleanCurInAmountStrArr = cleanAmountString(curInAmountStr);
-            List<String> cleanNextInAmountStrArr = cleanAmountString(nextInAmountStr);
+            if (nextInAmountStr.contains("R") && curInAmountStr.contains("R"))
+                nextInAmountStr = centsRepStr;
 
-            String cleanCurInAmountStr = cleanCurInAmountStrArr.get(0);
-            String cleanNextInAmountStr = cleanNextInAmountStrArr.get(0);
+            String cleanCurInAmountStr = dataInputCleanerUtil.cleanAmountString(curInAmountStr);
+            String cleanNextInAmountStr = dataInputCleanerUtil.cleanAmountString(nextInAmountStr);
 
             if (cleanNextInAmountStr.equals(cleanCurInAmountStr)) {
                 cleanNextInAmountStr = centsRepStr;
                 renumerationStrPos++;
             }
 
-            if (cleanCurInAmountStrArr.size() > 1) {
-
-                cleanCurInAmountStr = "";
-                for (String cleanCurInAmount : cleanCurInAmountStrArr) {
-                    cleanCurInAmountStr += cleanCurInAmount;
-                }
-            }
-
-            if (cleanNextInAmountStr.contains(centsRepStr) && !cleanCurInAmountStrArr.isEmpty())
+            if (cleanNextInAmountStr.contains(centsRepStr) && !cleanCurInAmountStr.isEmpty())
                 newAmountStr = cleanCurInAmountStr + "." + cleanNextInAmountStr;
 
-            if (newAmountStr.isEmpty() && !cleanCurInAmountStrArr.isEmpty())
+            if (newAmountStr.isEmpty() && !cleanCurInAmountStr.isEmpty())
                 newAmountStr = cleanCurInAmountStr + centsRepStr;
 
-            Double newAmount = Double.valueOf(newAmountStr);
+            BigDecimal newAmount = new BigDecimal(newAmountStr);
             renumerations.add(newAmount);
             
             renumerationStrPos++;
         }
         
         return renumerations;
-    }
-
-    private static String formatJobTitleStr(String jobTitle) {
-
-        String spaceRegex = "\\s+";
-        String lettersAndNumbersOnlyRegex = "[^a-zA-Z0-9\\s]";
-
-        if (jobTitle.isEmpty())
-         throw new NullPointerException("Cannot format empty job title string.");
-
-        jobTitle = jobTitle.replaceAll(lettersAndNumbersOnlyRegex, " ");
-        jobTitle = jobTitle.trim().replaceAll(spaceRegex, " ");
-
-        return jobTitle;
     }
 
     private static int findDepartmentStrPos(String[] dataInput) {
@@ -248,7 +203,7 @@ public class DataInputsConversionUtil {
         for (int i = 0; i < dataInputLen; i++) {
             
             String dataInputVal = dataInput[i];
-            if (deparmentList.contains(dataInputVal)) {
+            if (AppConstants.DEPARTMENTS.contains(dataInputVal)) {
 
                 departmentPos = i;
                 return departmentPos;
@@ -279,16 +234,6 @@ public class DataInputsConversionUtil {
         return datePos;
     }
 
-    private static boolean findDateStrMatch(String dateStr) {
-
-        String dateStrRegex = "\\[\\'\\d{4}/\\d{2}/\\d{2}\\'\\]";
-
-        boolean dateStrMatch = false;
-
-        dateStrMatch = Pattern.compile(dateStrRegex).matcher(dateStr).matches();
-        return dateStrMatch;
-    }
-
     private static int findRenumerationStrPos(String[] dataInput) {
 
         String renumerationRegex = "R\\d+.*";
@@ -309,18 +254,13 @@ public class DataInputsConversionUtil {
         return renumPos;
     }
 
-    private static List<String> cleanAmountString(String curInAmountStr) {
-        
-        List<String> cleanedAmountString = new ArrayList<>();
+    private static boolean findDateStrMatch(String dateStr) {
 
-        String amountStrRegex = "\\d+";
+        String dateStrRegex = "\\[\\'\\d{4}/\\d{2}/\\d{2}\\'\\]";
 
-        Pattern amountStrPattern = Pattern.compile(amountStrRegex);
-        Matcher amountStrMatcher = amountStrPattern.matcher(curInAmountStr);
+        boolean dateStrMatch = false;
 
-        while (amountStrMatcher.find()) {
-            cleanedAmountString.add(amountStrMatcher.group());
-        }
-        return cleanedAmountString;
+        dateStrMatch = Pattern.compile(dateStrRegex).matcher(dateStr).matches();
+        return dateStrMatch;
     }
 }

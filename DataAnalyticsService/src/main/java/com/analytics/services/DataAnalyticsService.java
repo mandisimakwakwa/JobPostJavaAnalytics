@@ -1,8 +1,8 @@
 package com.analytics.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.analytics.events.DataAnalyticsTrendsEvent;
@@ -15,16 +15,20 @@ import com.analytics.util.JobPostFrequencyUtil;
 @Service
 public class DataAnalyticsService {
 
-    @Autowired
-    private DataInputsConversionUtil dataInputsConversionUtil;
-    @Autowired
-    private JobPostFrequencyUtil frequencyUtil;
-
     private final DataAnalyticsEventProdService dataAnalyticsEventProdService;
+
+    private DataInputsConversionUtil dataInputsConversionUtil;
+
+    private JobPostFrequencyUtil frequencyUtil;
     
     public DataAnalyticsService(
-        DataAnalyticsEventProdService dataAnalyticsEventProdServ) {
+        DataAnalyticsEventProdService dataAnalyticsEventProdServ,
+        DataInputsConversionUtil dataInputsConvUtil,
+        JobPostFrequencyUtil jobPostFreqUtil) {
+            
             this.dataAnalyticsEventProdService = dataAnalyticsEventProdServ;
+            this.dataInputsConversionUtil = dataInputsConvUtil;
+            this.frequencyUtil = jobPostFreqUtil;
     }
 
     public void parseDataInputEvent(DataInputEvent dataInputEvent) throws Exception {
@@ -34,10 +38,10 @@ public class DataAnalyticsService {
             .convDataInputsToJobPosts(dataInputArray);
 
         String mostPopularDailyPost = getMostPopularDailyPost(jobPosts);
-        // String mostPopularDailyLocation = getMostPopularDailyLocation(jobPosts);
         String mostPopularDailyDepartment = getMostPopularDailyDepartment(jobPosts);
+        // String mostPopularDailyLocation = getMostPopularDailyLocation(jobPosts);
 
-        Double avgDailyRenumeration = getAvgDailyRenumeration(jobPosts);
+        BigDecimal avgDailyRenumeration = getAvgDailyRenumeration(jobPosts);
         
         JobPost highestRenumerationJobPost = getPostWithHighestRenumeration(jobPosts);
         JobPost lowestRenumerationJobPost = getPostWithLowestRenumeration(jobPosts);
@@ -57,8 +61,6 @@ public class DataAnalyticsService {
     private String getMostPopularDailyPost(List<JobPost> jobPosts) {
 
         String mostFreqJobTitle = frequencyUtil.findMostFrequentJobTitle(jobPosts);
-        
-        System.out.println("most frequent job title : " + mostFreqJobTitle);
         return mostFreqJobTitle;
     }
 
@@ -71,17 +73,13 @@ public class DataAnalyticsService {
     private String getMostPopularDailyDepartment(List<JobPost> jobPosts) {
 
         String mostFreqJobDepartment = frequencyUtil.findMostFrequentJobDepartment(jobPosts);
-        
-        System.out.println("most frequent job department : " + mostFreqJobDepartment);
         return mostFreqJobDepartment;
     }
 
     // Determine average daily renumeration
-    private Double getAvgDailyRenumeration(List<JobPost> jobPosts) {
+    private BigDecimal getAvgDailyRenumeration(List<JobPost> jobPosts) {
 
-        Double avgRenum = frequencyUtil.calculateAvgRenumerationPerAnnum(jobPosts);
-
-        System.out.println("avg job renumeration : " + avgRenum);
+        BigDecimal avgRenum = frequencyUtil.calculateAvgRenumerationPerAnnum(jobPosts);
         return avgRenum;
     }
     
@@ -89,8 +87,6 @@ public class DataAnalyticsService {
     private JobPost getPostWithHighestRenumeration(List<JobPost> jobPosts) {
 
         JobPost jobPostWithHighestRenum = frequencyUtil.findJobPostWithHighestRenum(jobPosts);
-
-        System.out.println("job post with highest annual renum val : " + jobPostWithHighestRenum.getTitle());
         return jobPostWithHighestRenum;
     }
 
@@ -98,8 +94,6 @@ public class DataAnalyticsService {
     private JobPost getPostWithLowestRenumeration(List<JobPost> jobPosts) {
 
         JobPost jobPostWithLowestRenum = frequencyUtil.findJobPostWithLowestRenum(jobPosts);
-
-        System.out.println("job post with lowest annual renum val : " + jobPostWithLowestRenum.getTitle());
         return jobPostWithLowestRenum;
     }
 }

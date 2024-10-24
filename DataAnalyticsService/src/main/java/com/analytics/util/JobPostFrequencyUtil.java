@@ -1,5 +1,6 @@
 package com.analytics.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +15,13 @@ import com.analytics.rest.models.JobPost;
 
 @Component
 public class JobPostFrequencyUtil {
+
+    private DataInputCleanerUtil dataInputCleanerUtil;
+
+    public JobPostFrequencyUtil(DataInputCleanerUtil cleanerUtil) {
+
+        this.dataInputCleanerUtil = cleanerUtil;
+    }
 
     // Strategy Comparator Pattern
     public String findMostFrequentJobTitle(List<JobPost> jobPosts) {
@@ -32,20 +40,19 @@ public class JobPostFrequencyUtil {
     }
 
     // Calc avg renum per annum val
-    public Double calculateAvgRenumerationPerAnnum(List<JobPost> jobPosts) {
+    public BigDecimal calculateAvgRenumerationPerAnnum(List<JobPost> jobPosts) {
 
-        Double avgRenum = 0.00;
-        Double renumSum = 0.00;
+        BigDecimal avgRenum = BigDecimal.valueOf(0.00);
+        BigDecimal renumSum = BigDecimal.valueOf(0.00);
 
-        List<Double> extractedRenums = extractJobRenumeratios(jobPosts);
-        
-        Set<Double> renumSet = convertDoubleListToSet(extractedRenums);
+        List<BigDecimal> extractedRenums = extractJobRenumeratios(jobPosts);
+        Set<BigDecimal> renumSet = dataInputCleanerUtil.cleanJobRenum(extractedRenums);
 
         int sizeOfRenumSet = renumSet.size();
 
-        for (Double renum : renumSet) {
+        for (BigDecimal renum : renumSet) {
 
-            int renumDigitsBefDecimalPoint = (int)Math.log10(renum);
+            int renumDigitsBefDecimalPoint = getDigitsOfBigD(renum);
             
             if (renumDigitsBefDecimalPoint < 4)
                 renum = convertHourlyToAnnum(renum);
@@ -53,10 +60,10 @@ public class JobPostFrequencyUtil {
             if (renumDigitsBefDecimalPoint > 4 && renumDigitsBefDecimalPoint < 6)
                 renum = convertMonthlyToAnnum(renum);
 
-            renumSum += renum;
+            renumSum = renumSum.add(renum);
         }
 
-        avgRenum = renumSum/sizeOfRenumSet;
+        avgRenum = renumSum.divide(BigDecimal.valueOf(sizeOfRenumSet));
         return avgRenum;
     }
 
@@ -64,21 +71,23 @@ public class JobPostFrequencyUtil {
         
         JobPost jobPost = new JobPost();
 
-        Double maxJobPostRenum = 0.0;
+        BigDecimal maxJobPostRenum = BigDecimal.valueOf(0.00);
 
         for (JobPost jobPostIn : jobPosts) {
             
-            Set<Double> jobPostRenumSet = new HashSet<>(jobPost.getRenumeration());
+            Set<BigDecimal> jobPostRenumSet = new HashSet<BigDecimal>(jobPostIn.getRenumeration());
 
-            for (Double jobPostRenum : jobPostRenumSet) {
+            for (BigDecimal jobPostRenum : jobPostRenumSet) {
 
-                if (jobPostRenum < 4)
+                int renumDigitsBefDecimalPoint = getDigitsOfBigD(jobPostRenum);
+
+                if (renumDigitsBefDecimalPoint < 4)
                     jobPostRenum = convertHourlyToAnnum(jobPostRenum);
 
-                if (jobPostRenum > 4 && jobPostRenum < 6)
+                if (renumDigitsBefDecimalPoint > 4 && renumDigitsBefDecimalPoint < 6)
                     jobPostRenum = convertMonthlyToAnnum(jobPostRenum);
                 
-                if (jobPostRenum > maxJobPostRenum) {
+                if (jobPostRenum.compareTo(maxJobPostRenum) == 1) {
 
                     maxJobPostRenum = jobPostRenum;
                     jobPost = jobPostIn;
@@ -92,21 +101,23 @@ public class JobPostFrequencyUtil {
 		
         JobPost jobPost = new JobPost();
 
-        Double minJobPostRenum = 0.0;
+        BigDecimal minJobPostRenum = BigDecimal.valueOf(1000000000.00);
 
         for (JobPost jobPostIn : jobPosts) {
             
-            Set<Double> jobPostRenumSet = new HashSet<>(jobPost.getRenumeration());
+            Set<BigDecimal> jobPostRenumSet = new HashSet<>(jobPostIn.getRenumeration());
 
-            for (Double jobPostRenum : jobPostRenumSet) {
+            for (BigDecimal jobPostRenum : jobPostRenumSet) {
 
-                if (jobPostRenum < 4)
+                int renumDigitsBefDecimalPoint = getDigitsOfBigD(jobPostRenum);
+
+                if (renumDigitsBefDecimalPoint < 4)
                     jobPostRenum = convertHourlyToAnnum(jobPostRenum);
 
-                if (jobPostRenum > 4 && jobPostRenum < 6)
+                if (renumDigitsBefDecimalPoint > 4 && renumDigitsBefDecimalPoint < 6)
                     jobPostRenum = convertMonthlyToAnnum(jobPostRenum);
                 
-                if (jobPostRenum < minJobPostRenum) {
+                if (jobPostRenum.compareTo(minJobPostRenum) == -1) {
 
                     minJobPostRenum = jobPostRenum;
                     jobPost = jobPostIn;
@@ -220,44 +231,46 @@ public class JobPostFrequencyUtil {
         return jobDepartments;
     }
 
-    private List<Double> extractJobRenumeratios(List<JobPost> jobPosts) {
+    private List<BigDecimal> extractJobRenumeratios(List<JobPost> jobPosts) {
         
-        List<Double> renums = new ArrayList<>();
+        List<BigDecimal> renums = new ArrayList<>();
 
         for (JobPost jobPost : jobPosts) {
 
-            List<Double> jobPostRenums = jobPost.getRenumeration();
+            Set<BigDecimal> jobPostRenums = jobPost.getRenumeration();
 
-            for (Double jobPostRenum : jobPostRenums) {
-
+            for (BigDecimal jobPostRenum : jobPostRenums)
                 renums.add(jobPostRenum);
-            }
         }
         return renums;
     }
 
-    private Set<Double> convertDoubleListToSet(List<Double> extractedRenums) {
+    private BigDecimal convertHourlyToAnnum(BigDecimal renum) {
         
-        return new HashSet<Double>(extractedRenums);
+        BigDecimal day = BigDecimal.valueOf(8);
+        BigDecimal week = BigDecimal.valueOf(5);
+        BigDecimal month = BigDecimal.valueOf(4);
+        BigDecimal year = BigDecimal.valueOf(12) ;
+
+        renum = renum.multiply(day);
+        renum = renum.multiply(week);
+        renum = renum.multiply(month);
+        renum = renum.multiply(year);
+
+        return renum;
     }
 
-    private Double convertHourlyToAnnum(Double renum) {
-        
-        Double day = (double) 8;
-        Double week = (double) 5;
-        Double month = (double) 4;
-        Double year = (double) 12;
+    private BigDecimal convertMonthlyToAnnum(BigDecimal renum) {
 
-        Double renumAnnum = 0.0;
+        BigDecimal year = BigDecimal.valueOf(12);
 
-        return renumAnnum * day * week * month * year;
+        return renum.multiply(year);
     }
 
-    private Double convertMonthlyToAnnum(Double renum) {
+    private int getDigitsOfBigD(BigDecimal renum) {
 
-        Double year = (double) 12;
-        Double renumAnnum = 0.0;
-
-        return renumAnnum * year;
+        BigDecimal tmpRenum = renum.stripTrailingZeros();
+        
+        return tmpRenum.precision() - tmpRenum.scale();
     }
 }

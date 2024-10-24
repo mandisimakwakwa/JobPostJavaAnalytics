@@ -36,7 +36,6 @@ public class DataAnalyticsEventProdService {
         dataAnalyticsTrendsEvent.setEventGroupId(dataAnalyticsTrendsEventGroupId);
 
         kT.send(dataAnalyticsTrendsEventTopic, dataAnalyticsTrendsEvent);
-
         return dataAnalyticsTrendsEvent;
     }
 }

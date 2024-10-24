@@ -1,5 +1,7 @@
 package com.analytics.events;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import com.analytics.rest.models.JobPost;
@@ -11,7 +13,7 @@ public class DataAnalyticsTrendsEvent extends Event {
     // String mostPopularDailyLocation = "";
     String mostPopularDailyDepartment = "";
 
-    Double avgDailyRenumeration = 0.00;
+    BigDecimal avgDailyRenumeration = BigDecimal.valueOf(0.00);
 
     JobPost highestRenumerationJobPost = new JobPost();
     JobPost lowestRenumerationJobPost = new JobPost();
@@ -40,11 +42,11 @@ public class DataAnalyticsTrendsEvent extends Event {
         this.mostPopularDailyDepartment = mostPopularDailyDepartment;
     }
 
-    public Double getAvgDailyRenumeration() {
+    public BigDecimal getAvgDailyRenumeration() {
         return avgDailyRenumeration;
     }
 
-    public void setAvgDailyRenumeration(Double avgDailyRenumeration) {
+    public void setAvgDailyRenumeration(BigDecimal avgDailyRenumeration) {
         this.avgDailyRenumeration = avgDailyRenumeration;
     }
 

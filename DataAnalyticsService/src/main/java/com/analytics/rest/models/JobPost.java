@@ -1,13 +1,14 @@
 package com.analytics.rest.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 public class JobPost {
 
     String title;
     String department;
-    List<Double> renumeration;
+    Set<BigDecimal> renumeration;
     Date date;
 
     public String getTitle() {
@@ -24,10 +25,10 @@ public class JobPost {
         this.department = department;
     }
 
-    public List<Double> getRenumeration() {
+    public Set<BigDecimal> getRenumeration() {
         return renumeration;
     }
-    public void setRenumeration(List<Double> renumeration) {
+    public void setRenumeration(Set<BigDecimal> renumeration) {
         this.renumeration = renumeration;
     }
 
