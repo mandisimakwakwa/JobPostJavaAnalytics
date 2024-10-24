@@ -28,8 +28,8 @@ public class InputApplication {
 		SpringApplication.run(InputApplication.class, args);
 	}
 
-	@Scheduled(cron = "0 0 0 * * *")
-	// @Scheduled(cron = "0 0 6 * * *")
+	// @Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 0 5 * * *")
     public void cronJobScheduler() throws InterruptedException, IOException {
 
         dataInputService.createCronJobProc();
